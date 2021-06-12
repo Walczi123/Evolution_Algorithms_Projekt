@@ -1,16 +1,25 @@
 import numpy as np
 
-from problems.problems import EllipsoidProblem
-from problems.problems import SphereProblem
+from problems.problems import EllipsoidProblem, SphereProblem, SchwefelProblem, WeierstrassProblem
 from optimizers.cmaes import CMA
 from optimizers.cmaes_clearing import CMA_clearing
 from optimizers.cmaes_crowding import CMA_crowding
 
+SEED = 1202052400
+REPETITIONS = 1
+SAVED_ITERATION = 1000
+POPULATION_SIZE = 100
+DIMENSION = 100
+SIGMA = 40.0
+MEAN = 3
+KAPPA_FACTOR = 1.5
+SIGMA_FACTOR = 1/2
+
 
 def main():
-    dim = 40
-    optimizer = CMA_crowding(mean=3 * np.ones(dim), sigma=2.0)
-    problem = SphereProblem(dim)
+    optimizer = CMA(mean=MEAN * np.ones(DIMENSION),
+                    sigma=SIGMA, population_size=POPULATION_SIZE)
+    problem = SchwefelProblem(DIMENSION)
     print(f" evals    {type(problem).__name__} vlaue")
 
     evals = 0
