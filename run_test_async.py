@@ -9,12 +9,17 @@ from optimizers.cmaes import CMA
 from optimizers.cmaes_clearing import CMA_clearing
 from optimizers.cmaes_crowding import CMA_crowding
 
-from problems.problems import EllipsoidProblem
+from problems.problems import EllipsoidProblem, SphereProblem, \
+    RosenbrockProblem, AckleyProblem, RastrginProblem, \
+    GriewankProblem, WeierstrassProblem, SchwefelProblem
 
-SEED = 1202052400
-REPETITIONS = 2
-DIM = 40
-SIGMA = 2.0
+SEED = 12026021
+MAX_ITERATION = 300000
+REPETITIONS = 10
+SAVED_ITERATION = 1000
+POPULATION_SIZE = 100
+DIMENSION = 40
+SIGMA = 40.0
 MEAN = 3
 KAPPA_FACTOR = 1.5
 SIGMA_FACTOR = 1/2
@@ -24,21 +29,98 @@ def generate_instances():
     result = []
 
     # EllipsoidProblem
-    result.append(Test(CMA(mean=MEAN * np.ones(DIM), sigma=SIGMA),
-                       EllipsoidProblem(), n_repetition=REPETITIONS,
-                       name="CMAES_EllipsoidProblem", seed=SEED))
-    result.append(Test(CMA_clearing(mean=MEAN * np.ones(DIM), sigma=SIGMA, kappa_factor=KAPPA_FACTOR, sigma_factor=SIGMA_FACTOR),
-                       EllipsoidProblem(), n_repetition=REPETITIONS,
-                       name="CMAES_Clearing_EllipsoidProblem", seed=SEED))
-    result.append(Test(CMA_crowding(mean=MEAN * np.ones(DIM), sigma=SIGMA),
-                       EllipsoidProblem(), n_repetition=REPETITIONS,
-                       name="CMAES_Crowding_EllipsoidProblem", seed=SEED))
+    result.append(Test(optimizer=CMA(mean=MEAN * np.ones(DIMENSION), sigma=SIGMA, population_size=POPULATION_SIZE),
+                       problem=EllipsoidProblem(DIMENSION), n_repetition=REPETITIONS,
+                       name="CMAES", seed=SEED, saved_iterations=SAVED_ITERATION, max_iteration=MAX_ITERATION))
+    result.append(Test(CMA_clearing(mean=MEAN * np.ones(DIMENSION), sigma=SIGMA, population_size=POPULATION_SIZE, kappa_factor=KAPPA_FACTOR, sigma_factor=SIGMA_FACTOR),
+                       problem=EllipsoidProblem(DIMENSION), n_repetition=REPETITIONS,
+                       name="CMAES_Clearing", seed=SEED, saved_iterations=SAVED_ITERATION, max_iteration=MAX_ITERATION))
+    result.append(Test(CMA_crowding(mean=MEAN * np.ones(DIMENSION), sigma=SIGMA, population_size=POPULATION_SIZE),
+                       problem=EllipsoidProblem(DIMENSION), n_repetition=REPETITIONS,
+                       name="CMAES_Crowding", seed=SEED, saved_iterations=SAVED_ITERATION, max_iteration=MAX_ITERATION))
+
+    # SphereProblem
+    result.append(Test(optimizer=CMA(mean=MEAN * np.ones(DIMENSION), sigma=SIGMA, population_size=POPULATION_SIZE),
+                       problem=SphereProblem(DIMENSION), n_repetition=REPETITIONS,
+                       name="CMAES", seed=SEED, saved_iterations=SAVED_ITERATION, max_iteration=MAX_ITERATION))
+    result.append(Test(CMA_clearing(mean=MEAN * np.ones(DIMENSION), sigma=SIGMA, population_size=POPULATION_SIZE, kappa_factor=KAPPA_FACTOR, sigma_factor=SIGMA_FACTOR),
+                       SphereProblem(DIMENSION), n_repetition=REPETITIONS,
+                       name="CMAES_Clearing", seed=SEED, saved_iterations=SAVED_ITERATION, max_iteration=MAX_ITERATION))
+    result.append(Test(CMA_crowding(mean=MEAN * np.ones(DIMENSION), sigma=SIGMA, population_size=POPULATION_SIZE),
+                       problem=SphereProblem(DIMENSION), n_repetition=REPETITIONS,
+                       name="CMAES_Crowding", seed=SEED, saved_iterations=SAVED_ITERATION, max_iteration=MAX_ITERATION))
+
+    # RosenbrockProblem
+    result.append(Test(optimizer=CMA(mean=MEAN * np.ones(DIMENSION), sigma=SIGMA, population_size=POPULATION_SIZE),
+                       problem=RosenbrockProblem(DIMENSION), n_repetition=REPETITIONS,
+                       name="CMAES", seed=SEED, saved_iterations=SAVED_ITERATION, max_iteration=MAX_ITERATION))
+    result.append(Test(CMA_clearing(mean=MEAN * np.ones(DIMENSION), sigma=SIGMA, population_size=POPULATION_SIZE, kappa_factor=KAPPA_FACTOR, sigma_factor=SIGMA_FACTOR),
+                       RosenbrockProblem(DIMENSION), n_repetition=REPETITIONS,
+                       name="CMAES_Clearing", seed=SEED, saved_iterations=SAVED_ITERATION, max_iteration=MAX_ITERATION))
+    result.append(Test(CMA_crowding(mean=MEAN * np.ones(DIMENSION), sigma=SIGMA, population_size=POPULATION_SIZE),
+                       problem=RosenbrockProblem(DIMENSION), n_repetition=REPETITIONS,
+                       name="CMAES_Crowding", seed=SEED, saved_iterations=SAVED_ITERATION, max_iteration=MAX_ITERATION))
+
+    # AckleyProblem
+    result.append(Test(optimizer=CMA(mean=MEAN * np.ones(DIMENSION), sigma=SIGMA, population_size=POPULATION_SIZE),
+                       problem=AckleyProblem(DIMENSION), n_repetition=REPETITIONS,
+                       name="CMAES", seed=SEED, saved_iterations=SAVED_ITERATION, max_iteration=MAX_ITERATION))
+    result.append(Test(CMA_clearing(mean=MEAN * np.ones(DIMENSION), sigma=SIGMA, population_size=POPULATION_SIZE, kappa_factor=KAPPA_FACTOR, sigma_factor=SIGMA_FACTOR),
+                       AckleyProblem(DIMENSION), n_repetition=REPETITIONS,
+                       name="CMAES_Clearing", seed=SEED, saved_iterations=SAVED_ITERATION, max_iteration=MAX_ITERATION))
+    result.append(Test(CMA_crowding(mean=MEAN * np.ones(DIMENSION), sigma=SIGMA, population_size=POPULATION_SIZE),
+                       problem=AckleyProblem(DIMENSION), n_repetition=REPETITIONS,
+                       name="CMAES_Crowding", seed=SEED, saved_iterations=SAVED_ITERATION, max_iteration=MAX_ITERATION))
+
+    # RastrginProblem
+    result.append(Test(optimizer=CMA(mean=MEAN * np.ones(DIMENSION), sigma=SIGMA, population_size=POPULATION_SIZE),
+                       problem=RastrginProblem(DIMENSION), n_repetition=REPETITIONS,
+                       name="CMAES", seed=SEED, saved_iterations=SAVED_ITERATION, max_iteration=MAX_ITERATION))
+    result.append(Test(CMA_clearing(mean=MEAN * np.ones(DIMENSION), sigma=SIGMA, population_size=POPULATION_SIZE, kappa_factor=KAPPA_FACTOR, sigma_factor=SIGMA_FACTOR),
+                       RastrginProblem(DIMENSION), n_repetition=REPETITIONS,
+                       name="CMAES_Clearing", seed=SEED, saved_iterations=SAVED_ITERATION, max_iteration=MAX_ITERATION))
+    result.append(Test(CMA_crowding(mean=MEAN * np.ones(DIMENSION), sigma=SIGMA, population_size=POPULATION_SIZE),
+                       problem=RastrginProblem(DIMENSION), n_repetition=REPETITIONS,
+                       name="CMAES_Crowding", seed=SEED, saved_iterations=SAVED_ITERATION, max_iteration=MAX_ITERATION))
+
+    # GriewankProblem
+    result.append(Test(optimizer=CMA(mean=MEAN * np.ones(DIMENSION), sigma=SIGMA, population_size=POPULATION_SIZE),
+                       problem=GriewankProblem(DIMENSION), n_repetition=REPETITIONS,
+                       name="CMAES", seed=SEED, saved_iterations=SAVED_ITERATION, max_iteration=MAX_ITERATION))
+    result.append(Test(CMA_clearing(mean=MEAN * np.ones(DIMENSION), sigma=SIGMA, population_size=POPULATION_SIZE, kappa_factor=KAPPA_FACTOR, sigma_factor=SIGMA_FACTOR),
+                       GriewankProblem(DIMENSION), n_repetition=REPETITIONS,
+                       name="CMAES_Clearing", seed=SEED, saved_iterations=SAVED_ITERATION, max_iteration=MAX_ITERATION))
+    result.append(Test(CMA_crowding(mean=MEAN * np.ones(DIMENSION), sigma=SIGMA, population_size=POPULATION_SIZE),
+                       problem=GriewankProblem(DIMENSION), n_repetition=REPETITIONS,
+                       name="CMAES_Crowding", seed=SEED, saved_iterations=SAVED_ITERATION, max_iteration=MAX_ITERATION))
+
+    # # WeierstrassProblem
+    # result.append(Test(optimizer=CMA(mean=MEAN * np.ones(DIMENSION), sigma=SIGMA, population_size=POPULATION_SIZE),
+    #                    problem=WeierstrassProblem(DIMENSION), n_repetition=REPETITIONS,
+    #                    name="CMAES", seed=SEED, saved_iterations=SAVED_ITERATION, max_iteration=MAX_ITERATION))
+    # result.append(Test(CMA_clearing(mean=MEAN * np.ones(DIMENSION), sigma=SIGMA, population_size=POPULATION_SIZE, kappa_factor=KAPPA_FACTOR, sigma_factor=SIGMA_FACTOR),
+    #                    WeierstrassProblem(DIMENSION), n_repetition=REPETITIONS,
+    #                    name="CMAES_Clearing", seed=SEED, saved_iterations=SAVED_ITERATION, max_iteration=MAX_ITERATION))
+    # result.append(Test(CMA_crowding(mean=MEAN * np.ones(DIMENSION), sigma=SIGMA, population_size=POPULATION_SIZE),
+    #                    problem=WeierstrassProblem(DIMENSION), n_repetition=REPETITIONS,
+    #                    name="CMAES_Crowding", seed=SEED, saved_iterations=SAVED_ITERATION, max_iteration=MAX_ITERATION))
+
+    # SchwefelProblem
+    result.append(Test(optimizer=CMA(mean=MEAN * np.ones(DIMENSION), sigma=SIGMA, population_size=POPULATION_SIZE),
+                       problem=SchwefelProblem(DIMENSION), n_repetition=REPETITIONS,
+                       name="CMAES", seed=SEED, saved_iterations=SAVED_ITERATION, max_iteration=MAX_ITERATION))
+    result.append(Test(CMA_clearing(mean=MEAN * np.ones(DIMENSION), sigma=SIGMA, population_size=POPULATION_SIZE, kappa_factor=KAPPA_FACTOR, sigma_factor=SIGMA_FACTOR),
+                       SchwefelProblem(DIMENSION), n_repetition=REPETITIONS,
+                       name="CMAES_Clearing", seed=SEED, saved_iterations=SAVED_ITERATION, max_iteration=MAX_ITERATION))
+    result.append(Test(CMA_crowding(mean=MEAN * np.ones(DIMENSION), sigma=SIGMA, population_size=POPULATION_SIZE),
+                       problem=SchwefelProblem(DIMENSION), n_repetition=REPETITIONS,
+                       name="CMAES_Crowding", seed=SEED, saved_iterations=SAVED_ITERATION, max_iteration=MAX_ITERATION))
 
     return result
 
 
 def run_test(test):
-    print("in: " + test.name)
+    print("in: " + type(test.problem).__name__ + " " + test.name)
     test.start()
 
 

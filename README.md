@@ -6,6 +6,7 @@ https://github.com/CyberAgent/cmaes
 
 
 https://github.com/LDNN97/Evolutionary-Optimization-Algorithms
+https://github.com/CyberAgent/cmaes
 
 inne zrodla:
 https://github.com/CyberAgent/cmaes/blob/main/cmaes/_cma.py
