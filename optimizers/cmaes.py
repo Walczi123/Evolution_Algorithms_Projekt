@@ -1,4 +1,3 @@
-from additional_methods.clearing import clearing
 import math
 import numpy as np
 
@@ -9,13 +8,14 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 
+from optimizers.common import _is_valid_bounds, _compress_symmetric, _decompress_symmetric
 
 _EPS = 1e-8
 _MEAN_MAX = 1e32
 _SIGMA_MAX = 1e32
 
 
-class CMA:
+class CMA(object):
     """CMA-ES stochastic optimizer class with ask-and-tell interface.
 
     Example:
@@ -78,6 +78,14 @@ class CMA:
         population_size: Optional[int] = None,
         cov: Optional[np.ndarray] = None,
     ):
+        self.base_mean = mean
+        self.base_sigma = sigma
+        self.base_bounds = bounds
+        self.base_n_max_resampling = n_max_resampling
+        self.base_seed = seed
+        self.base_population_size = population_size
+        self.base_cov = cov
+
         assert sigma > 0, "sigma must be non-zero positive value"
 
         assert np.all(
@@ -244,6 +252,142 @@ class CMA:
             bounds, self._mean), "invalid bounds"
         self._bounds = bounds
 
+    def set_seed(self, seed: int):
+        self._rng = np.random.RandomState(seed)
+
+    def reset(self):
+        mean = self.base_mean
+        sigma = self.base_sigma
+        bounds = self.base_bounds
+        n_max_resampling = self.base_n_max_resampling
+        seed = self.base_seed
+        population_size = self.base_population_size
+        cov = self.base_cov
+
+        assert sigma > 0, "sigma must be non-zero positive value"
+
+        assert np.all(
+            np.abs(mean) < _MEAN_MAX
+        ), f"Abs of all elements of mean vector must be less than {_MEAN_MAX}"
+
+        n_dim = len(mean)
+        assert n_dim > 1, "The dimension of mean must be larger than 1"
+
+        if population_size is None:
+            population_size = 4 + math.floor(3 * math.log(n_dim))  # (eq. 48)
+        assert population_size > 0, "popsize must be non-zero positive value."
+
+        mu = population_size // 2
+
+        # (eq.49)
+        weights_prime = np.array(
+            [
+                math.log((population_size + 1) / 2) - math.log(i + 1)
+                for i in range(population_size)
+            ]
+        )
+        mu_eff = (np.sum(weights_prime[:mu]) **
+                  2) / np.sum(weights_prime[:mu] ** 2)
+        mu_eff_minus = (np.sum(weights_prime[mu:]) ** 2) / np.sum(
+            weights_prime[mu:] ** 2
+        )
+
+        # learning rate for the rank-one update
+        alpha_cov = 2
+        c1 = alpha_cov / ((n_dim + 1.3) ** 2 + mu_eff)
+        # learning rate for the rank-μ update
+        cmu = min(
+            1 - c1 - 1e-8,  # 1e-8 is for large popsize.
+            alpha_cov
+            * (mu_eff - 2 + 1 / mu_eff)
+            / ((n_dim + 2) ** 2 + alpha_cov * mu_eff / 2),
+        )
+        assert c1 <= 1 - cmu, "invalid learning rate for the rank-one update"
+        assert cmu <= 1 - c1, "invalid learning rate for the rank-μ update"
+
+        min_alpha = min(
+            1 + c1 / cmu,  # eq.50
+            1 + (2 * mu_eff_minus) / (mu_eff + 2),  # eq.51
+            (1 - c1 - cmu) / (n_dim * cmu),  # eq.52
+        )
+
+        # (eq.53)
+        positive_sum = np.sum(weights_prime[weights_prime > 0])
+        negative_sum = np.sum(np.abs(weights_prime[weights_prime < 0]))
+        weights = np.where(
+            weights_prime >= 0,
+            1 / positive_sum * weights_prime,
+            min_alpha / negative_sum * weights_prime,
+        )
+        cm = 1  # (eq. 54)
+
+        # learning rate for the cumulation for the step-size control (eq.55)
+        c_sigma = (mu_eff + 2) / (n_dim + mu_eff + 5)
+        d_sigma = 1 + 2 * \
+            max(0, math.sqrt((mu_eff - 1) / (n_dim + 1)) - 1) + c_sigma
+        assert (
+            c_sigma < 1
+        ), "invalid learning rate for cumulation for the step-size control"
+
+        # learning rate for cumulation for the rank-one update (eq.56)
+        cc = (4 + mu_eff / n_dim) / (n_dim + 4 + 2 * mu_eff / n_dim)
+        assert cc <= 1, "invalid learning rate for cumulation for the rank-one update"
+
+        self._n_dim = n_dim
+        self._popsize = population_size
+        self._mu = mu
+        self._mu_eff = mu_eff
+
+        self._cc = cc
+        self._c1 = c1
+        self._cmu = cmu
+        self._c_sigma = c_sigma
+        self._d_sigma = d_sigma
+        self._cm = cm
+
+        # E||N(0, I)|| (p.28)
+        self._chi_n = math.sqrt(self._n_dim) * (
+            1.0 - (1.0 / (4.0 * self._n_dim)) +
+            1.0 / (21.0 * (self._n_dim ** 2))
+        )
+
+        self._weights = weights
+
+        # evolution path
+        self._p_sigma = np.zeros(n_dim)
+        self._pc = np.zeros(n_dim)
+
+        self._mean = mean
+
+        if cov is None:
+            self._C = np.eye(n_dim)
+        else:
+            assert cov.shape == (
+                n_dim, n_dim), "Invalid shape of covariance matrix"
+            self._C = cov
+
+        self._sigma = sigma
+        self._D: Optional[np.ndarray] = None
+        self._B: Optional[np.ndarray] = None
+
+        # bounds contains low and high of each parameter.
+        assert bounds is None or _is_valid_bounds(
+            bounds, mean), "invalid bounds"
+        self._bounds = bounds
+        self._n_max_resampling = n_max_resampling
+
+        self._g = 0
+        self._rng = np.random.RandomState(seed)
+
+        # Termination criteria
+        self._tolx = 1e-12 * sigma
+        self._tolxup = 1e4
+        self._tolfun = 1e-12
+        self._tolconditioncov = 1e14
+
+        self._funhist_term = 10 + math.ceil(30 * n_dim / population_size)
+        self._funhist_values = np.empty(self._funhist_term * 2)
+
     def ask(self) -> np.ndarray:
         """Sample a parameter"""
         for i in range(self._n_max_resampling):
@@ -293,7 +437,6 @@ class CMA:
 
     def tell(self, solutions: List[Tuple[np.ndarray, float]]) -> None:
         """Tell evaluation values"""
-
         assert len(
             solutions) == self._popsize, "Must tell popsize-length solutions."
         for s in solutions:
@@ -418,37 +561,3 @@ class CMA:
             return True
 
         return False
-
-
-def _is_valid_bounds(bounds: Optional[np.ndarray], mean: np.ndarray) -> bool:
-    if bounds is None:
-        return True
-    if (mean.size, 2) != bounds.shape:
-        return False
-    if not np.all(bounds[:, 0] <= mean):
-        return False
-    if not np.all(mean <= bounds[:, 1]):
-        return False
-    return True
-
-
-def _compress_symmetric(sym2d: np.ndarray) -> np.ndarray:
-    assert len(sym2d.shape) == 2 and sym2d.shape[0] == sym2d.shape[1]
-    n = sym2d.shape[0]
-    dim = (n * (n + 1)) // 2
-    sym1d = np.zeros(dim)
-    start = 0
-    for i in range(n):
-        sym1d[start: start + n - i] = sym2d[i][i:]  # noqa: E203
-        start += n - i
-    return sym1d
-
-
-def _decompress_symmetric(sym1d: np.ndarray) -> np.ndarray:
-    n = int(np.sqrt(sym1d.size * 2))
-    assert (n * (n + 1)) // 2 == sym1d.size
-    R, C = np.triu_indices(n)
-    out = np.zeros((n, n), dtype=sym1d.dtype)
-    out[R, C] = sym1d
-    out[C, R] = sym1d
-    return out

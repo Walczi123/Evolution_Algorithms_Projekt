@@ -2,35 +2,37 @@ import numpy as np
 from .problem import Problem
 
 
-class Ellipsoid(Problem):
+class EllipsoidProblem(Problem):
 
-    def __init__(self, dim, lb, ub):
-        super().__init__(dim, lb, ub)
+    def __init__(self):
+        super().__init__()
 
     def evaluate(self, x):
-        x = self.lb + x * (self.ub - self.lb)
+        # print("ellipsoid problem")
+        n = len(x)
+        if len(x) < 2:
+            raise ValueError("dimension must be greater one")
+        return sum([(1000 ** (i / (n - 1)) * x[i]) ** 2 for i in range(n)])
+
+
+class SphereProblem(Problem):
+
+    def __init__(self):
+        super().__init__()
+
+    def evaluate(self, x):
+        # x = self.lb + x * (self.ub - self.lb)
         re = sum(np.power(x[i], 2) for i in range(self.D))
         return re
 
 
-class Sphere(Problem):
+class RosenbrockProblem(Problem):
 
-    def __init__(self, dim, lb, ub):
-        super().__init__(dim, lb, ub)
-
-    def evaluate(self, x):
-        x = self.lb + x * (self.ub - self.lb)
-        re = sum(np.power(x[i], 2) for i in range(self.D))
-        return re
-
-
-class Rosenbrock(Problem):
-
-    def __init__(self, dim, lb, ub):
-        super().__init__(dim, lb, ub)
+    def __init__(self):
+        super().__init__()
 
     def evaluate(self, x):
-        x = self.lb + x * (self.ub - self.lb)
+        # x = self.lb + x * (self.ub - self.lb)
         re = 0
         for i in range(self.D - 1):
             re += 100 * \
@@ -39,10 +41,10 @@ class Rosenbrock(Problem):
         return re
 
 
-class Ackley(Problem):
+class AckleyProblem(Problem):
 
-    def __init__(self, dim, lb, ub):
-        super().__init__(dim, lb, ub)
+    def __init__(self):
+        super().__init__()
 
     def evaluate(self, x):
         x = self.lb + x * (self.ub - self.lb)
@@ -61,26 +63,26 @@ class Ackley(Problem):
         return re
 
 
-class Rastrgin(Problem):
+class RastrginProblem(Problem):
 
-    def __init__(self, dim, lb, ub):
-        super().__init__(dim, lb, ub)
+    def __init__(self):
+        super().__init__()
 
     def evaluate(self, x):
-        x = self.lb + x * (self.ub - self.lb)
+        # x = self.lb + x * (self.ub - self.lb)
         re = 0
         for i in range(self.D):
             re += x[i] ** 2 - 10 * np.cos(2 * np.pi * x[i]) + 10
         return re
 
 
-class Griewank(Problem):
+class GriewankProblem(Problem):
 
-    def __init__(self, dim, lb, ub):
-        super().__init__(dim, lb, ub)
+    def __init__(self):
+        super().__init__()
 
     def evaluate(self, x):
-        x = self.lb + x * (self.ub - self.lb)
+        # x = self.lb + x * (self.ub - self.lb)
         part1, part2 = 0, 1
         for i in range(self.D):
             part1 += x[i] ** 2
@@ -89,13 +91,13 @@ class Griewank(Problem):
         return re
 
 
-class Weierstrass(Problem):
+class WeierstrassProblem(Problem):
 
-    def __init__(self, dim, lb, ub):
-        super().__init__(dim, lb, ub)
+    def __init__(self):
+        super().__init__()
 
     def evaluate(self, x):
-        x = self.lb + x * (self.ub - self.lb)
+        # x = self.lb + x * (self.ub - self.lb)
         part1 = 0
         for i in range(self.D):
             for j in range(21):
@@ -109,13 +111,13 @@ class Weierstrass(Problem):
         return re
 
 
-class Schwefel(Problem):
+class SchwefelProblem(Problem):
 
-    def __init__(self, dim, lb, ub):
-        super().__init__(dim, lb, ub)
+    def __init__(self):
+        super().__init__()
 
     def evaluate(self, x):
-        x = self.lb + x * (self.ub - self.lb)
+        # x = self.lb + x * (self.ub - self.lb)
         part1 = 0
         for i in range(self.D):
             part1 += x[i] * np.sin(np.sqrt(np.abs(x[i])))
