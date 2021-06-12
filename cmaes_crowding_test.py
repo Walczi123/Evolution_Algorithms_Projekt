@@ -1,5 +1,5 @@
 import numpy as np
-from optimizers.cmaes import CMA
+from optimizers.cmaes_crowding import CMA
 
 
 def ellipsoid(x):
