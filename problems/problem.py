@@ -1,15 +1,9 @@
 class Problem(object):
-    def __init__(self, dim, lb, up, *arg1, **arg2):
+    def __init__(self, dimension):
         """
         initialize attributes of the problem
-        :argument
-            D : Dimension
-            lb : lower bound
-            ub : upper bound
         """
-        self.D = dim
-        self.lb = lb
-        self.ub = up
+        self.D = dimension
 
     def evaluate(self, x):
         """
@@ -17,5 +11,5 @@ class Problem(object):
         :argument
             x : input
         """
+        print("base problem")
         pass
-
