@@ -2,6 +2,17 @@ import numpy as np
 from .problem import Problem
 
 
+class Ellipsoid(Problem):
+
+    def __init__(self, dim, lb, ub):
+        super().__init__(dim, lb, ub)
+
+    def evaluate(self, x):
+        x = self.lb + x * (self.ub - self.lb)
+        re = sum(np.power(x[i], 2) for i in range(self.D))
+        return re
+
+
 class Sphere(Problem):
 
     def __init__(self, dim, lb, ub):
@@ -17,12 +28,14 @@ class Rosenbrock(Problem):
 
     def __init__(self, dim, lb, ub):
         super().__init__(dim, lb, ub)
-        
+
     def evaluate(self, x):
         x = self.lb + x * (self.ub - self.lb)
         re = 0
         for i in range(self.D - 1):
-            re += 100 * np.power((np.power(x[i], 2) - x[i + 1]), 2) + np.power((x[i] - 1), 2)
+            re += 100 * \
+                np.power((np.power(x[i], 2) - x[i + 1]),
+                         2) + np.power((x[i] - 1), 2)
         return re
 
 
@@ -30,7 +43,7 @@ class Ackley(Problem):
 
     def __init__(self, dim, lb, ub):
         super().__init__(dim, lb, ub)
-        
+
     def evaluate(self, x):
         x = self.lb + x * (self.ub - self.lb)
 
@@ -77,19 +90,21 @@ class Griewank(Problem):
 
 
 class Weierstrass(Problem):
-    
+
     def __init__(self, dim, lb, ub):
         super().__init__(dim, lb, ub)
-        
+
     def evaluate(self, x):
         x = self.lb + x * (self.ub - self.lb)
         part1 = 0
         for i in range(self.D):
             for j in range(21):
-                part1 += np.power(0.5, j) * np.cos(2 * np.pi * np.power(3, j) * (x[i] + 0.5))
+                part1 += np.power(0.5, j) * np.cos(2 * np.pi *
+                                                   np.power(3, j) * (x[i] + 0.5))
         part2 = 0
         for i in range(21):
-            part2 += np.power(0.5, i) * np.cos(2 * np.pi * np.power(3, i) * 0.5)
+            part2 += np.power(0.5, i) * np.cos(2 *
+                                               np.pi * np.power(3, i) * 0.5)
         re = part1 - self.D * part2
         return re
 
@@ -98,7 +113,7 @@ class Schwefel(Problem):
 
     def __init__(self, dim, lb, ub):
         super().__init__(dim, lb, ub)
-        
+
     def evaluate(self, x):
         x = self.lb + x * (self.ub - self.lb)
         part1 = 0
