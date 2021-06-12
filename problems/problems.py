@@ -16,7 +16,7 @@ class EllipsoidProblem(Problem):
 
 
 class SphereProblem(Problem):
-
+    # See: https://www.sfu.ca/~ssurjano/spheref.html
     def __init__(self, dimension):
         super().__init__(dimension)
 
@@ -27,7 +27,7 @@ class SphereProblem(Problem):
 
 
 class RosenbrockProblem(Problem):
-
+    # See: https://www.sfu.ca/~ssurjano/rosen.html
     def __init__(self, dimension):
         super().__init__(dimension)
 
@@ -42,7 +42,7 @@ class RosenbrockProblem(Problem):
 
 
 class AckleyProblem(Problem):
-
+    # See: https: // www.sfu.ca/~ssurjano/ackley.html
     def __init__(self, dimension):
         super().__init__(dimension)
 
@@ -64,7 +64,7 @@ class AckleyProblem(Problem):
 
 
 class RastrginProblem(Problem):
-
+    # See: https://www.sfu.ca/~ssurjano/rastr.html
     def __init__(self, dimension):
         super().__init__(dimension)
 
@@ -77,7 +77,7 @@ class RastrginProblem(Problem):
 
 
 class GriewankProblem(Problem):
-
+    # See: https://www.sfu.ca/~ssurjano/griewank.html
     def __init__(self, dimension):
         super().__init__(dimension)
 
@@ -112,7 +112,7 @@ class WeierstrassProblem(Problem):
 
 
 class SchwefelProblem(Problem):
-
+    #  See: https://www.sfu.ca/~ssurjano/schwef.html
     def __init__(self, dimension):
         super().__init__(dimension)
 

@@ -33,8 +33,8 @@ def competition(pair):
 def crowding(population, previous_population):
     if previous_population is None:
         return population
-    parents = copy.deepcopy(population)
-    children = previous_population
+    children  = copy.deepcopy(population)
+    parents = previous_population
     # pairing
     len_parents = len(parents)
     tmp_indexes = list(range(0, len_parents))
