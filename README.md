@@ -1,6 +1,10 @@
 # WAE_Projekt
 
-zrodlo :
+glowne zrodlo :
+https://github.com/CyberAgent/cmaes
+
+
+
 https://github.com/LDNN97/Evolutionary-Optimization-Algorithms
 
 inne zrodla:
