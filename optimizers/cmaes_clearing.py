@@ -314,12 +314,13 @@ class CMA:
         B, D = self._eigen_decomposition()
         self._B, self._D = None, None
 
-        x_k = np.array([s[0] for s in solutions])  # ~ N(m, σ^2 C)
+        cleared_solution = clearing(
+            solutions, sigma=(1/2)*self._sigma*self.dim, kappa=int(1.5*self._mu))
+
+        x_k = np.array([s[0] for s in cleared_solution])  # ~ N(m, σ^2 C)
         y_k = (x_k - self._mean) / self._sigma  # ~ N(0, C)
 
         # Selection and recombination
-        # Clearing here
-        # clearing(solutions, 1, 2)
 
         y_w = np.sum(y_k[: self._mu].T *
                      self._weights[: self._mu], axis=1)  # eq.41
