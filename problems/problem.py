@@ -1,8 +1,9 @@
 class Problem(object):
-    def __init__(self):
+    def __init__(self, dimension):
         """
         initialize attributes of the problem
         """
+        self.D = dimension
 
     def evaluate(self, x):
         """

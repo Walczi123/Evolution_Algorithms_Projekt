@@ -1,4 +1,5 @@
-from typing import Optional
+import os
+
 from optimizers.cmaes import CMA
 from problems.problem import Problem
 

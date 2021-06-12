@@ -7,6 +7,7 @@ from tests.test import Test
 
 from optimizers.cmaes import CMA
 from optimizers.cmaes_clearing import CMA_clearing
+from optimizers.cmaes_crowding import CMA_crowding
 
 from problems.problems import EllipsoidProblem
 
@@ -21,12 +22,18 @@ SIGMA_FACTOR = 1/2
 
 def generate_instances():
     result = []
+
+    # EllipsoidProblem
     result.append(Test(CMA(mean=MEAN * np.ones(DIM), sigma=SIGMA),
                        EllipsoidProblem(), n_repetition=REPETITIONS,
                        name="CMAES_EllipsoidProblem", seed=SEED))
     result.append(Test(CMA_clearing(mean=MEAN * np.ones(DIM), sigma=SIGMA, kappa_factor=KAPPA_FACTOR, sigma_factor=SIGMA_FACTOR),
                        EllipsoidProblem(), n_repetition=REPETITIONS,
                        name="CMAES_Clearing_EllipsoidProblem", seed=SEED))
+    result.append(Test(CMA_crowding(mean=MEAN * np.ones(DIM), sigma=SIGMA),
+                       EllipsoidProblem(), n_repetition=REPETITIONS,
+                       name="CMAES_Crowding_EllipsoidProblem", seed=SEED))
+
     return result
 
 

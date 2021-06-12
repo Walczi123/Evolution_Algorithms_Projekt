@@ -4,8 +4,8 @@ from .problem import Problem
 
 class EllipsoidProblem(Problem):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, dimension):
+        super().__init__(dimension)
 
     def evaluate(self, x):
         # print("ellipsoid problem")
@@ -17,8 +17,8 @@ class EllipsoidProblem(Problem):
 
 class SphereProblem(Problem):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, dimension):
+        super().__init__(dimension)
 
     def evaluate(self, x):
         # x = self.lb + x * (self.ub - self.lb)
@@ -28,8 +28,8 @@ class SphereProblem(Problem):
 
 class RosenbrockProblem(Problem):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, dimension):
+        super().__init__(dimension)
 
     def evaluate(self, x):
         # x = self.lb + x * (self.ub - self.lb)
@@ -43,11 +43,11 @@ class RosenbrockProblem(Problem):
 
 class AckleyProblem(Problem):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, dimension):
+        super().__init__(dimension)
 
     def evaluate(self, x):
-        x = self.lb + x * (self.ub - self.lb)
+        # x = self.lb + x * (self.ub - self.lb)
 
         # shift operation
         # x = x - 42.0969
@@ -65,8 +65,8 @@ class AckleyProblem(Problem):
 
 class RastrginProblem(Problem):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, dimension):
+        super().__init__(dimension)
 
     def evaluate(self, x):
         # x = self.lb + x * (self.ub - self.lb)
@@ -78,8 +78,8 @@ class RastrginProblem(Problem):
 
 class GriewankProblem(Problem):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, dimension):
+        super().__init__(dimension)
 
     def evaluate(self, x):
         # x = self.lb + x * (self.ub - self.lb)
@@ -93,8 +93,8 @@ class GriewankProblem(Problem):
 
 class WeierstrassProblem(Problem):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, dimension):
+        super().__init__(dimension)
 
     def evaluate(self, x):
         # x = self.lb + x * (self.ub - self.lb)
@@ -113,8 +113,8 @@ class WeierstrassProblem(Problem):
 
 class SchwefelProblem(Problem):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, dimension):
+        super().__init__(dimension)
 
     def evaluate(self, x):
         # x = self.lb + x * (self.ub - self.lb)

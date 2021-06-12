@@ -254,6 +254,7 @@ class CMA(object):
 
     def set_seed(self, seed: int):
         self._rng = np.random.RandomState(seed)
+        np.random.seed(seed)
 
     def reset(self):
         mean = self.base_mean
