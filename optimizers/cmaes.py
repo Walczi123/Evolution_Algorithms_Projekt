@@ -1,4 +1,5 @@
 import math
+import copy
 import numpy as np
 
 from typing import Any
@@ -78,13 +79,13 @@ class CMA(object):
         population_size: Optional[int] = None,
         cov: Optional[np.ndarray] = None,
     ):
-        self.base_mean = mean
-        self.base_sigma = sigma
-        self.base_bounds = bounds
-        self.base_n_max_resampling = n_max_resampling
-        self.base_seed = seed
-        self.base_population_size = population_size
-        self.base_cov = cov
+        self.base_mean = copy.deepcopy(mean)
+        self.base_sigma = copy.deepcopy(sigma)
+        self.base_bounds = copy.deepcopy(bounds)
+        self.base_n_max_resampling = copy.deepcopy(n_max_resampling)
+        self.base_seed = copy.deepcopy(seed)
+        self.base_population_size = copy.deepcopy(population_size)
+        self.base_cov = copy.deepcopy(cov)
 
         assert sigma > 0, "sigma must be non-zero positive value"
 
@@ -230,17 +231,17 @@ class CMA(object):
         # Set _rng for unpickled object.
         setattr(self, "_rng", np.random.RandomState())
 
-    @property
+    @ property
     def dim(self) -> int:
         """A number of dimensions"""
         return self._n_dim
 
-    @property
+    @ property
     def population_size(self) -> int:
         """A population size"""
         return self._popsize
 
-    @property
+    @ property
     def generation(self) -> int:
         """Generation number which is monotonically incremented
         when multi-variate gaussian distribution is updated."""
@@ -257,13 +258,13 @@ class CMA(object):
         np.random.seed(seed)
 
     def reset(self):
-        mean = self.base_mean
-        sigma = self.base_sigma
-        bounds = self.base_bounds
-        n_max_resampling = self.base_n_max_resampling
-        seed = self.base_seed
-        population_size = self.base_population_size
-        cov = self.base_cov
+        mean = copy.deepcopy(self.base_mean)
+        sigma = copy.deepcopy(self.base_sigma)
+        bounds = copy.deepcopy(self.base_bounds)
+        n_max_resampling = copy.deepcopy(self.base_n_max_resampling)
+        seed = copy.deepcopy(self.base_seed)
+        population_size = copy.deepcopy(self.base_population_size)
+        cov = copy.deepcopy(self.base_cov)
 
         assert sigma > 0, "sigma must be non-zero positive value"
 

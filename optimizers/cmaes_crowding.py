@@ -81,6 +81,10 @@ class CMA_crowding(CMA):
         super().__init__(mean, sigma, bounds, n_max_resampling, seed, population_size, cov)
         self.previous_population = None
 
+    def reset(self):
+        super().reset()
+        self.previous_population = None
+
     def tell(self, solutions: List[Tuple[np.ndarray, float]]) -> None:
         """Tell evaluation values"""
 

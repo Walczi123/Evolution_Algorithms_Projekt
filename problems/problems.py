@@ -63,7 +63,7 @@ class AckleyProblem(Problem):
         return re
 
 
-class RastrginProblem(Problem):
+class RastriginProblem(Problem):
     # See: https://www.sfu.ca/~ssurjano/rastr.html
     def __init__(self, dimension):
         super().__init__(dimension)
