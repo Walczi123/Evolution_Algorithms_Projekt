@@ -15,7 +15,7 @@ class Test:
     def compute(self):
         result = []
         result.append(
-            f"seed\t{self.seed}\tpoultation_size\t{self.optimizer.population_size}\tmean\t{self.optimizer.base_mean[0]}\tsigma\t{self.optimizer.base_sigma}\n")
+            f"seed\t{self.seed}\tpoultation_size\t{self.optimizer.base_population_size}\tmean\t{self.optimizer.base_mean[0]}\tsigma\t{self.optimizer.base_sigma}\n")
         result.append(f"evals\t{type(self.problem).__name__} vlaue\n")
 
         evals = 0
