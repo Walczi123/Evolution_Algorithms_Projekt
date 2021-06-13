@@ -33,8 +33,8 @@ def competition(pair):
 def crowding(population, previous_population):
     if previous_population is None:
         return population
-    parents = copy.deepcopy(population)
-    children = previous_population
+    children = copy.deepcopy(population)
+    parents = previous_population
     # pairing
     len_parents = len(parents)
     tmp_indexes = list(range(0, len_parents))
@@ -67,13 +67,18 @@ def crowding(population, previous_population):
         r = d(p1c2) + d(p2c1)
 
         if l < r:
-            parents[p_indexes[i][0]] = competition(p1c1)
-            parents[p_indexes[i][1]] = competition(p2c2)
+            children[p_indexes[i][0]] = competition(p1c1)
+            children[p_indexes[i][1]] = competition(p2c2)
         else:
-            parents[p_indexes[i][0]] = competition(p1c2)
-            parents[p_indexes[i][1]] = competition(p2c1)
+            children[p_indexes[i][0]] = competition(p1c2)
+            children[p_indexes[i][1]] = competition(p2c1)
 
-    return parents
+    if len_parents % 2:
+        pc = (parents[tmp_indexes[len_parents-1]],
+              children[tmp_indexes[len_parents-1]])
+        children[tmp_indexes[len_parents-1]] = competition(pc)
+
+    return children
 
 
 if __name__ == "__main__":
@@ -81,4 +86,5 @@ if __name__ == "__main__":
             (np.array([3,  3,  3]), 3), (np.array([4,  4,  4]), 4), (np.array([5,  5,  5]), 5)]
     r = [(np.array([6,  6,  6]), 6), (np.array([7,  7,  7]), 7), 
         (np.array([8,  8,  8]), 8), (np.array([9,  9,  9]), 9), (np.array([10,  10,  10]), 10)]
-    crowding(r, pop)
+    print(crowding(pop, r))
+
